@@ -14,6 +14,8 @@ export const FieldLayout = (props) => {
 	const newGameClick = () => {
 		props.setField(emptyField);
 		props.setCurrentPlayer('X');
+		props.setIsDraw(false);
+		props.setIsGameEnded(false);
 		const boxes = document.querySelectorAll('.box');
 		boxes.forEach((box) => {
 			box.textContent = '';
@@ -38,31 +40,42 @@ export const FieldLayout = (props) => {
 			if (field[i] === 'X') XPlaces.push(i);
 			if (field[i] === 'O') OPlaces.push(i);
 		}
-		const result1 = arrayIncludesCombination(WIN_PATTERNS, XPlaces);
-		const result2 = arrayIncludesCombination(WIN_PATTERNS, OPlaces);
-		debugger;
-		return result1 || result2;
+		return (
+			arrayIncludesCombination(WIN_PATTERNS, XPlaces) ||
+			arrayIncludesCombination(WIN_PATTERNS, OPlaces)
+		);
 	}
 	function isBoxEmpty(boxes, number) {
 		return boxes[number] === '';
 	}
 	const boxClicked = (e) => {
-		const clickedCellName = e.target.id;
-		console.log('element', clickedCellName);
-		const cellNumber = Number(clickedCellName[clickedCellName.length - 1]);
+		debugger;
+		if (!props.isGameEnded) {
+			const clickedCellName = e.target.id;
 
-		if (isBoxEmpty(props.field, cellNumber - 1)) {
-			e.target.textContent = props.currentPlayer;
-			props.field[cellNumber - 1] = props.currentPlayer;
-			props.setField(props.field);
-			props.currentPlayer === 'X'
-				? props.setCurrentPlayer('O')
-				: props.setCurrentPlayer('X');
-		}
-		const hasEmptyBox = props.field.find((element) => element === '');
-		if (hasWinner(props.field)) props.setIsGameEnded(true);
-		else {
-			if (hasEmptyBox === undefined) props.setIsDraw(true);
+			const cellNumber = Number(clickedCellName[clickedCellName.length - 1]);
+
+			if (
+				props.field[cellNumber - 1] !== 'X' &&
+				props.field[cellNumber - 1] !== 'O'
+			) {
+				e.target.textContent = props.currentPlayer;
+				props.field[cellNumber - 1] = props.currentPlayer;
+				props.setField(props.field);
+			}
+			const hasEmptyBox = props.field.find(
+				(element) => element !== 'X' && element !== 'O',
+			);
+			if (hasWinner(props.field)) props.setIsGameEnded(true);
+			else {
+				if (hasEmptyBox === undefined) {
+					props.setIsDraw(true);
+				} else {
+					props.currentPlayer === 'X'
+						? props.setCurrentPlayer('O')
+						: props.setCurrentPlayer('X');
+				}
+			}
 		}
 	};
 	return (
