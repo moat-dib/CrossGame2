@@ -1,10 +1,26 @@
 import { FieldLayout } from './FieldLayout.js';
+import PropTypes from 'prop-types';
 import styles from './FieldLayout.module.css';
-export const Field = ({field, setField, currentPlayer, setCurrentPlayer, isGameEnded,
-	setIsGameEnded, setIsDraw}) => {
-	
+export const Field = ({
+	field,
+	setField,
+	currentPlayer,
+	setCurrentPlayer,
+	isGameEnded,
+	setIsGameEnded,
+	setIsDraw,
+}) => {
+	Field.propTypes = {
+		field: PropTypes.array,
+		setField: PropTypes.object,
+		currentPlayer: PropTypes.string,
+		setCurrentPlayer: PropTypes.object,
+		isGameEnded: PropTypes.bool,
+		setIsGameEnded: PropTypes.object,
+		setIsDraw: PropTypes.object,
+	};
 	const boxClicked = (e) => {
-		if ((!isGameEnded) && (e.target.textContent ==='')) {
+		if (!isGameEnded && e.target.textContent === '') {
 			const clickedCellName = e.target.id;
 			const cellNumber = Number(clickedCellName[clickedCellName.length - 1]);
 			if (field[cellNumber - 1] !== 'X' && field[cellNumber - 1] !== 'O') {
@@ -14,7 +30,11 @@ export const Field = ({field, setField, currentPlayer, setCurrentPlayer, isGameE
 			}
 			if (hasWinner(field)) setIsGameEnded(true);
 			else {
-				if (!field.some((element) => {return (element !== 'X' && element !== 'O')})) {
+				if (
+					!field.some((element) => {
+						return element !== 'X' && element !== 'O';
+					})
+				) {
 					setIsDraw(true);
 				} else {
 					currentPlayer === 'X' ? setCurrentPlayer('O') : setCurrentPlayer('X');
@@ -22,21 +42,25 @@ export const Field = ({field, setField, currentPlayer, setCurrentPlayer, isGameE
 			}
 		}
 	};
-	const isWinCombination  = (arrayOfCombinations, boxes) => {
+	const isWinCombination = (arrayOfCombinations, boxes) => {
 		let result = false;
 		arrayOfCombinations.forEach((arrayItem) => {
 			let foundIdent = 0;
-			for (let i =0; i < boxes.length; i++) {
-				if (arrayItem[0] === boxes[i] || arrayItem[1] === boxes[i] || arrayItem[2] === boxes[i])
-				 foundIdent++;
+			for (let i = 0; i < boxes.length; i++) {
+				if (
+					arrayItem[0] === boxes[i] ||
+					arrayItem[1] === boxes[i] ||
+					arrayItem[2] === boxes[i]
+				)
+					foundIdent++;
 			}
-			if (foundIdent === 3)	{
+			if (foundIdent === 3) {
 				result = true;
 				colorWinBoxes(arrayItem);
 			}
 		});
 		return result;
-	}
+	};
 	const hasWinner = (field) => {
 		let OPlaces = [];
 		let XPlaces = [];
@@ -54,16 +78,17 @@ export const Field = ({field, setField, currentPlayer, setCurrentPlayer, isGameE
 			if (field[i] === 'X') XPlaces.push(i);
 			if (field[i] === 'O') OPlaces.push(i);
 		}
-		return (isWinCombination(winPatterns, XPlaces) || isWinCombination(winPatterns, OPlaces));
-	}
+		return (
+			isWinCombination(winPatterns, XPlaces) ||
+			isWinCombination(winPatterns, OPlaces)
+		);
+	};
 	const colorWinBoxes = (itemsArray) => {
 		const boxes = document.querySelectorAll('td div');
-			for (let i=0; i<boxes.length; i++) {
-				if ((i===itemsArray[0])||(i===itemsArray[1])||(i===itemsArray[2]))
+		for (let i = 0; i < boxes.length; i++) {
+			if (i === itemsArray[0] || i === itemsArray[1] || i === itemsArray[2])
 				boxes[i].classList.add(styles.winner);
-			}
-		};
-	return (
-		<FieldLayout boxClicked = {boxClicked} />
-	);
+		}
+	};
+	return <FieldLayout boxClicked={boxClicked} />;
 };

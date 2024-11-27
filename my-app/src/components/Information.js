@@ -1,5 +1,6 @@
 import { InformationLayout } from './InformationLayout.js';
-export const Information = ({isGameEnded, isDraw, currentPlayer}) => {
+import PropTypes from 'prop-types';
+export const Information = ({ isGameEnded, isDraw, currentPlayer }) => {
 	const createInfoString = (isGameEnded, isDraw, currentPlayer) => {
 		let infoString = '';
 		if (isDraw) {
@@ -9,9 +10,13 @@ export const Information = ({isGameEnded, isDraw, currentPlayer}) => {
 			else infoString = `Ходит: ${currentPlayer}`;
 		}
 		return infoString;
-	}
+	};
 	let infoString = createInfoString(isGameEnded, isDraw, currentPlayer);
-	return (
-		<InformationLayout info = {infoString} />
-	);
+	Information.propTypes = {
+		isGameEnded: PropTypes.bool,
+		isDraw: PropTypes.bool,
+		currentPlayer: PropTypes.string,
+		info: PropTypes.string,
+	};
+	return <InformationLayout info={infoString} />;
 };

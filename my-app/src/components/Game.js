@@ -3,7 +3,11 @@ import { GameLayout } from './GameLayout.js';
 import { Field } from './Field.js';
 import { Information } from './Information.js';
 import styles from './FieldLayout.module.css';
-export const Game = ({name}) => {
+import PropTypes from 'prop-types';
+export const Game = ({ name }) => {
+	Game.propTypes = {
+		name: PropTypes.string,
+	};
 	const emptyField = ['', '', '', '', '', '', '', '', ''];
 	const [currentPlayer, setCurrentPlayer] = useState('X');
 	const [isGameEnded, setIsGameEnded] = useState(false);
@@ -11,7 +15,9 @@ export const Game = ({name}) => {
 	const [field, setField] = useState(emptyField);
 	const [boxState] = useState('');
 	const newGameClick = () => {
-		const emptyField = field.map((item) => {return item = ''});
+		const emptyField = field.map((item) => {
+			return (item = '');
+		});
 		setField(emptyField);
 		setCurrentPlayer('X');
 		setIsDraw(false);
@@ -24,7 +30,7 @@ export const Game = ({name}) => {
 	};
 	return (
 		<>
-			<GameLayout name={name} newGameClick ={newGameClick} />
+			<GameLayout name={name} newGameClick={newGameClick} />
 			<Field
 				field={field}
 				setField={setField}
@@ -34,7 +40,10 @@ export const Game = ({name}) => {
 				setIsGameEnded={setIsGameEnded}
 				setIsDraw={setIsDraw}
 			/>
-			<Information isGameEnded={isGameEnded} isDraw={isDraw} currentPlayer={currentPlayer}
+			<Information
+				isGameEnded={isGameEnded}
+				isDraw={isDraw}
+				currentPlayer={currentPlayer}
 			/>
 		</>
 	);
