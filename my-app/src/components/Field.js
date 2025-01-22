@@ -23,9 +23,15 @@ export const Field = () =>
 		// 	setIsGameEnded: PropTypes.object,
 		// 	setIsDraw: PropTypes.object,
 		// };
-		const currentState = store.getState();
-		const [state, setState] = useState(currentState);
+		const emptyField = ['', '', '', '', '', '', '', '', ''];
+
+		const [state, setState] = useState(store.getState());
+		const [isGameEnded, setIsGameEnded] = useState(false);
+		const [currentPlayer, setCurrentPlayer] = useState('X');
+		const [isDraw, setIsDraw] = useState(false);
+		const [field, setField] = useState(emptyField);
 		const boxClicked = (e) => {
+			setState(store.getState());
 			if (!state.isGameEnded && e.target.textContent === '') {
 				const clickedCellName = e.target.id;
 				const cellNumber = Number(clickedCellName[clickedCellName.length - 1]);
@@ -35,11 +41,11 @@ export const Field = () =>
 				) {
 					e.target.textContent = state.currentPlayer;
 					state.field[cellNumber - 1] = state.currentPlayer;
-					//setField(field);
+					setField(field);
 					store.dispatch({ type: 'SET_FIELD', payload: state.field });
 				}
 				if (hasWinner(state.field)) {
-					//setIsGameEnded(true);
+					setIsGameEnded(true);
 					store.dispatch({ type: 'SET_GAME_OVER', payload: true });
 				} else {
 					if (
@@ -47,20 +53,16 @@ export const Field = () =>
 							return element !== 'X' && element !== 'O';
 						})
 					) {
-						//setIsDraw(true);
+						setIsDraw(true);
 						store.dispatch({ type: 'SET_DRAW', payload: true });
 					} else {
-						state.currentPlayer === 'X'
-							? //? setCurrentPlayer('O')
-								//: setCurrentPlayer('X');
-								store.dispatch({
-									type: 'SET_CURRENT_PLAYER',
-									payload: 'O',
-								})
-							: store.dispatch({
-									type: 'SET_CURRENT_PLAYER',
-									payload: 'X',
-								});
+						if (currentPlayer === 'X') {
+							setCurrentPlayer('O');
+							store.dispatch({ type: 'SET_CURRENT_PLAYER', payload: 'O' });
+						} else {
+							setCurrentPlayer('X');
+							store.dispatch({ type: 'SET_CURRENT_PLAYER', payload: 'X' });
+						}
 					}
 				}
 			}

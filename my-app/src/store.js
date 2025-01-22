@@ -1,6 +1,6 @@
 import { appReducer } from './reducer';
 export const createStore = (appReducer) => {
-	let state = {};
+	let state;
 
 	return {
 		dispatch: (action) => {
